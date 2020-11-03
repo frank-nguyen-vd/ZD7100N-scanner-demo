@@ -1,0 +1,14 @@
+
+obj/Debug/
+
+.vs/scanner-demo/v16/
+
+*.exe
+
+bin/Debug/scanner-demo.exe.CodeAnalysisLog.xml
+
+bin/Debug/scanner-demo.exe.config
+
+bin/Debug/scanner-demo.exe.lastcodeanalysissucceeded
+
+bin/Debug/scanner-demo.pdb
