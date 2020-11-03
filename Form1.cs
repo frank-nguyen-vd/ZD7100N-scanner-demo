@@ -12,27 +12,79 @@ namespace scanner_demo
 {
     public partial class Main : Form
     {
+        private int scanner;
+
         public Main()
         {
             InitializeComponent();
+
+            // User Initialization
+            scanner = 0;
+        }
+
+        private void showConnectionStatus(string msg, string severity)
+        {
+            txtConnectionStatus.Text = msg;
+            switch (severity)
+            {
+                case "error":
+                    txtConnectionStatus.ForeColor = Color.Red;
+                    break;
+                case "warning":
+                    txtConnectionStatus.ForeColor = Color.Orange;
+                    break;
+                case "info":
+                    txtConnectionStatus.ForeColor = Color.Blue;                    
+                    break;
+                default:
+                    txtConnectionStatus.ForeColor = Color.Black;                    
+                    break;
+            }
         }
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
             int port = 0;
-            int bandrate = 0;
-            int hd = 0;
-            byte[] resp = new byte[64];
-            port = 17;
-            bandrate = 115200;
-            hd = Scan.OpenScaner(port, bandrate);            
-            if (hd > 0)
-            {                
-                MessageBox.Show("Connect to the device successfully", "Tips", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            int baudrate = 0;            
+
+            if (scanner > 0)
+            {
+                showConnectionStatus("Please turn off the connection first", "warning");
+                return;
             }
-            // 
-            else
-                MessageBox.Show("Fail to connect to the device", "Tips", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            port = Convert.ToInt32(txtComPort.Text);
+            baudrate = Convert.ToInt32(txtBaudRate.Text);
+            scanner = Scan.OpenScaner(port, baudrate);
+            if (scanner > 0)
+            {
+                showConnectionStatus("Connect to device successfully", "info");
+            } else
+            {
+                showConnectionStatus("Fail to connect to device", "error");
+            }
+                
+        }
+
+        private void txtTurnOff_Click(object sender, EventArgs e)
+        {
+            int status;
+            status = Scan.CloseScaner(scanner);
+            if (scanner == 0)
+            {
+                showConnectionStatus("No active connection", "warning");
+                return;
+            }
+
+            if (status != 0)
+            {
+                showConnectionStatus("Device is turned off", "info");
+                scanner = 0;
+            } else
+            {
+                showConnectionStatus("Cannot turn off device", "error");
+            }
+            
         }
     }
 }
